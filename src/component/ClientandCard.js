@@ -1,10 +1,11 @@
 import { returnCar,rentCard} from "../reducers/carsSlice";
-import {assignCarToClient,removeCarFromClient  } from "../reducers/clientsSlice";
+import {assignCarToClient,removeCarFromClient, selectClient  } from "../reducers/clientsSlice";
 import { useDispatch,useSelector } from "react-redux";
 export default function ClientandCard(){
     const dispatch=useDispatch();
     const cars=useSelector(state=>state.cars.list);
     const clients=useSelector(state=>state.clients.list);
+    const selectedClientId = useSelector(state => state.clients.selectedClientId);
     const Louer=(clientId,carId)=>{
         dispatch(rentCard(carId));
         dispatch(assignCarToClient({clientId,carId}));
@@ -25,8 +26,17 @@ export default function ClientandCard(){
       <div className="space-y-3">
         {clients.map(client => (
         <div key={client.id}
-            className="p-4 border rounded-xl bg-gray-50 flex justify-between items-center" >
+           onClick={() => dispatch(selectClient(client.id))}
+            className={`p-4 border rounded-xl cursor-pointer
+            ${selectedClientId === client.id ? "bg-blue-100" : "bg-gray-50"}`}
+            // className="p-4 border rounded-xl bg-gray-50 flex justify-between items-center" 
+            >
             <p className="font-medium text-gray-700">👤 {client.fullName}</p>
+             {client.activeRentalCarId && (
+                <p className="text-sm text-green-600">
+                  Loue la voiture ID: {client.activeRentalCarId}
+                </p>
+              )}
         </div>
         ))}
       </div>
@@ -49,13 +59,13 @@ export default function ClientandCard(){
             <div className="mt-4">
               {car.status === "available" ? (
                 <button
-                  onClick={() =>Louer(clients[0].id, car.id)}
+                  onClick={() =>Louer(selectedClientId.id, car.id)}
                   className="w-full py-2 rounded-xl  bg-green-500 hover:bg-green-600 text-white ">
                   Louer 🚗
                 </button>
                 ) : (
                 <button
-                  onClick={() =>Retourner(clients[0].id, car.id)}
+                  onClick={() =>Retourner(selectedClientId.id, car.id)}
                   className="w-full py-2 rounded-xl  bg-red-500 hover:bg-red-600 text-white " >
                   Retourner 🔄
                 </button>

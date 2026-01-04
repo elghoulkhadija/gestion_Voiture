@@ -29,7 +29,7 @@ const initialeState={
     plateNumber: "54321-C-8"
   }
 ],
-    selectedCarId: 1
+    selectedCarId: 102
   }
 
 
